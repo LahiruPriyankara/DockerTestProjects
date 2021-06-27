@@ -1,0 +1,455 @@
+sudo tar -xvf spring-tool-suite-4-4.8.1.RELEASE-e4.17.0-linux.gtk.x86_64.tar.gz
+/home/lahiru/Documents/springBoot/demoOne_For_Docker/target/docker_springboot_one.jar
+
+
+////////////////////////////////////////////////////// Insall java on Ubuntu 18.04 ///////////////////////////////////////////////////
+https://tecadmin.net/install-oracle-java-8-ubuntu-via-ppa/
+
+01. sudo apt update
+02. sudo apt install openjdk-11-jdk openjdk-11-jre
+
+03. java -version
+04. SET JAVA VERIABLE(not mandatary).
+
+////////////////////////////////////////////////////// Insall mysql on Ubuntu 18.04 ///////////////////////////////////////////////////
+
+
+01. sudo apt update
+02. sudo apt install mysql-server
+03. sudo mysql_secure_installationcontainer
+
+Question will be asked.In the basic level, give bello answers.
+
+01. n
+02. give password
+03. y
+04. y
+05. y
+06. y
+
+////////////////////////////////////////////////////// Insall mysql workbench on Ubuntu 18.04 ///////////////////////////////////////////
+01. sudo apt update
+02. sudo apt install mysql-workbench
+
+
+////////////////////////////////////////////////////// Install Visual Studio Code on Ubuntu 18.04 ////////////////////////////////////////
+https://linuxize.com/post/how-to-install-visual-studio-code-on-ubuntu-18-04/
+
+
+////////////////////////////////////////////////////// To update maven projet(rebuild)////////////////////////////////////////////////////
+Right click on the project 
+ => run as maven install 
+    => refresh the project
+
+
+////////////////////////////////////////////////////// Insall Docker on Ubuntu 18.04 ///////////////////////////////////////////////////
+
+There are multipleways(like : package way,script way,repository way etc.).Go and see....
+https://docs.docker.com/engine/install/ubuntu/
+
+I am using : Install using the convenience script
+
+01. unistall older version => sudo apt-get remove docker docker-engine docker.io containerd runc
+02. curl -fsSL https://get.docker.com -o get-docker.sh
+03. sudo sh get-docker.sh
+If you would like to use docker as non-root user, you should now consider adding your user to the "docker" group with somthing like:
+04. sudo usermod -aG docker your_pc_name // sudo usermod -aG docker lahiru
+05. verify docker is installed or not => docker -version
+
+Test DOcker with run hello world
+
+06. docker run hello-world
+07. see image => docker images
+08. see running container => docker container ls
+09. see container status => docker ps -a
+
+////////////////////////////////////////////////////// Run a container //////////////////////////////////////////////////////
+
+01. build an image           => docker build -f Dockerfile_name -t give_a_name_to_image
+                                If docker file name is Dockerfile,
+						docker build . -t give_a_name_to_image
+                                Otherwise
+						docker build -f abc -t docker_springboot_h2 . 																					
+02. show images              => docker images
+    show images list  => docker image ls
+
+03. VIEW ALL CONAINER PROCESS => docker ps -a //
+
+04. CURRENTLY RUNNUNG CONTAINERS   => docker container ls 
+
+05. RUN A CONTAINER                =>  docker run -p 8082:8080 --name containerName -d image_name_OR_id  
+                                      -p 8082:8080 :- 8082:FOR LOCAL ACCESS THE CONTAINER. 8080 IS FOR INSIDE THE CONTAINER.
+						      WE HIT TO localhost:8082 AND THEN GO TO THAT CONTAINER AND 8082 is MAP WITH 8080.
+
+
+06. docker container log => docker logs springboot_h2_container
+
+07. KILL A CONTAINER => Docker kill container_name_OR_id
+
+08. docker start container_name_or_id
+
+////////////////////////////////////////////////////// REMOVE A CONTAINER AND IMAGE //////////////////////////////////////////////////////
+
+01. FIRST CONTANERS SHOULD BE REMOVED, THEN IMAGE SHOULD BE REMOVED
+
+1. KILL A CONTAINER => Docker kill container_name_OR_id
+                            OR
+1. STPO A CONTAINER => docker stop controller_name_OR_id
+2. REMOVE A CONTAINR => container rm container_name_OR_id
+3. REMOVE AN IMAGE => docker rmi image__name_OR_id
+4. RUN  docker container ls  AND docker images TO CHECK WHETHER SUCCESSFULLY REMOVE OR NOT
+
+////////////////////////////////////////////////////// MySql Container setup ////////////////////////////////////////////////////////////
+DOCKER PAGE : https://hub.docker.com/_/mysql
+
+00. docker pull mysql:5.7
+01. docker images 
+02. docker run -p 3307:3306 --name=mysql_server -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=root -e MYSQL_PASSWORD=root -d mysql:5.7 // this is woking.......................................
+    docker run -p 3300:3306 --name mysql_server -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7  // this is woking.......................................
+
+                                                OR
+
+01. docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+    docker run -p 3307:3306 --name=mysql_server -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=root -e MYSQL_PASSWORD=root -d mysql:5.7 // this is woking.......................................
+    docker run -p 3300:3306 --name mysql_server -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7  // this is woking.......................................
+02. docker images // VIEW ALLIMAGES AND SEE WHETHER mysql IS IN THERE
+03. docker ps -a // VIEW ALL CONAINER PROCESS- RUNNING OR NOT. SEE mysql CONTAINER UP OR NOT.IF IT IS NOT, THERE IS SOME ERROR TO FIXED.
+04. docker exec -it id_of_container bin/bash -------- sql //EXAMPLE : docker exec -it 55b8232bfc82 bin/bash 
+05. mysql -u root -p root  // mysql -u root -p PRESS ENTER AND GIVE PASSWORD[IN MY EXAMPLE(according to 01) IT IS root]
+06. docker logs  mysql // TO SEE MYSQL LOGS
+06. docker exec -i mysql-docker mysql -uroot -proot demo < demo_data.sql //TO QUERY DATA TO DB FROM EXTERNAL SQL FILE.
+
+
+ ----EXTRA NOTE 
+//working but containers are not running error - Error response from daemon: Container  is not running
+docker run -p 3300:3301 --name=mysql -env="MYSQL_ROOT_PASSWORD=root" -env="MYSQL_PASSWORD=root" -d mysql:5.7
+docker run -d -p 3300:3301 --name=mysql -env="MYSQL_ROOT_PASSWORD=root" -env="MYSQL_PASSWORD=root" -env="MYSQL_DATABASE=test" mysql:5.7
+ 
+//
+docker ps -a = view all container process - running and not
+
+//link a project with my sql
+docker run -t --link mysql-demo:mysql -p 8088:8080 spring-demo-docker
+docker run -t --link mysql_server:mysql -p 9093:8083 --name springboot_prj3_mysql_cont -d springboot_prj3_mysql_img // this is woking.......................................
+
+docker start cdb413245aa1ec1c7e9747650c88b8fa2c18b00023e257650ea87cefc126b9e9
+
+
+docker exec -it idofcontainer bin/bash -------- sql
+mysql -u root -p demo
+docker-compose -f docker-compose.yml up
+docker-compose -f docker-compose.yml down
+
+
+////////////////////////////////////////////////////// Tomcat Container setup //////////////////////////////////////////////////////
+https://hub.docker.com/_/tomcat
+01. docker pull tomcat:jdk11
+02. docker run -p 9090:8080 --name tomcat image_name_or_id
+03. ctrl+c
+04. docker ps -a
+05. docker start container_name_or_id
+06. docker exec -it 98df94d798e7 bash
+07. GO TO : https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/ AND DOWNLOAD war FILE
+08. docker cp 'location of .war file ' docker_name_or_id:'/usr/local/tomcat/webapps/'
+    Linux: docker cp '/media/lahiru/EDUCATION/Ubuntu/UbuntuSPringPrj/tomcat/sample.war' 98df94d798e7:'/usr/local/tomcat/webapps/'
+    windows: docker cp 'E:\sample.war' 98df94d798e7:'/usr/local/tomcat/webapps/'
+
+09. docker exec -it 98df94d798e7 bash
+10. cd webapps
+11. cd sample
+12. ls
+    file can be seen
+13. exit
+//To save the tomcat session
+//When restart the machine, session is terminated also.so session will be save.
+14. docker commit comcat_contianer_id 'name_to_new_image'
+    docker commit 98df94d798e7 'copy_tomcat_session:1'
+
+
+
+
+//////////////// JAR FILE CAN BE RUN IN LINUX ////////////////////////
+java -jar  docker_SB_3.jar
+
+Ubuntu Linux Install vim Text Editor using apt-get
+
+//////////////// VIM INSTAL TO  ////////////////////////
+https://www.cyberciti.biz/faq/howto-install-vim-on-ubuntu-linux/
+
+01. Open terminal application. You can also press CTRL+ALT+T keyboard shortcut
+02. Update package => sudo apt update command
+03. Search for vim packages => sudo apt search vim
+04. Install vim on Ubuntu Linux => sudo apt install vim
+05. Verify vim installation => vim --version command
+
+Let us see all steps in details to install vim on Ubuntu system.
+
+
+--------------------------------- Eedit a jar file  ---------------------------------
+open terminal and navigate to jar file location.
+01. vim example.jarvim 
+Then all the filecan be seen.using arrow key go to file wich you want to editand press enter.file will be open in vim editor.
+Then type - i // for editing, insert mode
+After editing, press Esc to exit from insert mode.
+Then type - :wq! and press enter // save changes and quite from editor.
+
+
+
+
+/media/lahiru/EDUCATION/Ubuntu/UbuntuSPringPrj/tomcat/sample.war
+
+***** we are accessing docker through a virtual mahine of Vbox ,Linux is intalled on it.
+
+
+
+//////////////// Run a spring boot project with linking mysql Container ////////////////
+
+My sql container information:
+Container name : mysql_server
+Port :  3300:3306
+	3300 - expose for out side.
+	3306 - it is for containers.
+
+Spring boot application run in IDE.In the aplication.properties
+		spring.datasource.url=jdbc:mysql://localhost:3300/dockerSpringbootMySql 
+Port given as 3300, then it access container mysql database(mysql_server container DB).
+
+But when it containerize, we have to change url to : 
+		mysql://mysql_server:3306/dockerSpringbootMySql
+
+But we can not rebuild the project to generate jar by changing localhost:3300 to mysql_server:3306.
+Compiletime error was occure.
+
+So we have to change that property file(which is in jar file) through vim editor and then containerize the jar file.
+
+After that, create a database in sql container which you are conecting.
+In my example ,mysql://mysql_server:3306/dockerSpringbootMySql
+        dockerSpringbootMySql database created inside mysql_server
+Then containerized the application.
+When we contaierized the spring boot app without creating database, then error will be given.
+
+Containrizing spring boot appication,
+01. docker build -f Dockerfile -t springboot_prj3_mysql_img .
+02. docker run -t --link mysql_server:mysql -p 9093:8083 --name springboot_prj3_mysql_cont -d springboot_prj3_mysql_img // this is woking.......................................
+
+
+////////////////////////
+
+cat Dockerfile => to see the content of the docker file
+docker export --output="lateat.tar" myImageName => this command is used to export a Docker image into a tar file in local machine.
+docker import /home/my/demo.tgz => this is to import contents of a tar file(usually a docker image) in to your local repo.
+///////////////////
+
+-it => interactive
+
+ANguler . react, view
+
+
+
+
+
+
+
+docker version           => docker --version or docker -v
+pwd           		 => current working directry
+
+ 
+       
+currently running containers     => docker container ls 
+how many processes are running => docker ps
+
+docker container log => docker logs springboot_h2_container
+
+docker run -it id_of_the_image /bin/bash => click enter and then => ps => and elick enter- how many processes are running forgivan image
+by default two process => bash and ps
+ls => and click enter - show all the directry there.
+uname -a => sysytem imfomation
+whoami => who an I?
+
+ 
+
+sudo chown -R $USER:$USER . => change the permission
+docker-compose up => t run a container
+
+
+
+docker run -p 3307:3307 --name mysql-lahiru -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=root -e MYSQL_PASSWORD=root -d mysql:5.7
+
+docker run -p 3307:3307 --name mysql-lahiru -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7
+
+docker-compose up => t run a container
+docker logs  mysql-lahiru
+docker exec -it mysql-lahiru bash
+mysql -uroot -p
+
+
+
+create table  
+
+CREATE TABLE student(
+   stu_id INT,
+   stu_address VARCHAR(255),
+   stu_age INT,
+   stu_grade INT,
+   stu_name VARCHAR(255),
+   PRIMARY KEY(stu_id)
+);
+
+
+////create spring boot app with adding ErekaServer dependency
+add bellow prperties
+spring.application.name = eureka-service
+server.port=8761
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false
+
+////create spring boot app with adding ErekaClient dependency
+add bellow prperties
+spring:
+application:
+name: eureka-service
+server:
+port: 8761
+eureka:
+client:
+registerWithEureka: false
+fetchRegistry: false
+server:
+waitTimeInMsWhenSyncEmpty: 0
+
+
+//////////////////////////////////////////// 01 //////////////////////////////////////////////
+//GET
+http://localhost:8003/student/getStu
+//ADD STUDENT
+http://localhost:8003/student/addStu?studentName=sunil&studentAge=15&studentGender=male&studentGrade=10&studentAddress=addressOfSunil
+//UPDATE STUDENT
+http://localhost:8003/student/updateStu?id=2&studentName=sunilKumara
+//getStuByGrade
+http://localhost:8003/student/getStuByGrade?studentGrade=10
+//DELETE STUDENT
+http://localhost:8003/student/deleteStu?id=2
+
+
+//GET
+http://localhost:8003/teacher/getTeacher
+//ADD TEACHER
+http://localhost:8003/teacher/addTeacher?teacherName=sunil&teacherAge=15&teacherClass=13&teacherGender=male&teacherSubject=Sinhala&teacherAddress=addressOfSunil
+//UPDATE TEACHER
+http://localhost:8003/teacher/updateTeacher?id=3&teacherName=sunilPerera
+//getTEACHERByGrade
+http://localhost:8003/teacher/getTeacherByGrade?teacherClass=13
+//DELETE TEACHER
+http://localhost:8003/teacher/deleteTeacher?id=3
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////// 02 //////////////////////////////////////////////
+
+//GET
+http://localhost:8001/studentInfo/getStu
+//ADD STUDENT
+http://localhost:8001/studentInfo/addStu?studentName=sunil&studentAge=15&studentGender=male&studentGrade=10&studentAddress=addressOfSunil			
+//UPDATE STUDENT
+http://localhost:8001/studentInfo/updateStu?id=4&studentName=sunilKumara
+//getStuByGrade
+http://localhost:8001/studentInfo/getStuByGrade?studentGrade=10
+//DELETE STUDENT
+http://localhost:8001/studentInfo/deleteStu?id=4
+
+
+//GET
+http://localhost:8002/teacherInfo/getTeacher
+//ADD TEACHER
+http://localhost:8002/teacherInfo/addTeacher?teacherName=sunil&teacherAge=15&teacherClass=13&teacherGender=male&teacherSubject=Sinhala&teacherAddress=addressOfSunil
+//UPDATE TEACHER
+http://localhost:8002/teacherInfo/updateTeacher?id=5&teacherName=sunilPerera
+//getTEACHERByGrade
+http://localhost:8002/teacherInfo/getTeacherByGrade?teacherClass=13
+//DELETE TEACHER
+http://localhost:8002/teacherInfo/deleteTeacher?id=5
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////// 01 //////////////////////////////////////////////
+//GET
+http://localhost:8000/school/student/getStu
+//ADD STUDENT
+http://localhost:8000/school/student/addStu?studentName=sunil&studentAge=15&studentGender=male&studentGrade=10&studentAddress=addressOfSunil
+//UPDATE STUDENT
+http://localhost:8000/school/student/updateStu?id=2&studentName=sunilKumara
+//getStuByGrade
+http://localhost:8000/school/student/getStuByGrade?studentGrade=10
+//DELETE STUDENT
+http://localhost:8000/school/student/deleteStu?id=2
+
+
+//GET
+http://localhost:8000/school/teacher/getTeacher
+//ADD TEACHER
+http://localhost:8000/school/teacher/addTeacher?teacherName=sunil&teacherAge=15&teacherClass=13&teacherGender=male&teacherSubject=Sinhala&teacherAddress=addressOfSunil
+//UPDATE TEACHER
+http://localhost:8000/school/teacher/updateTeacher?id=3&teacherName=sunilPerera
+//getTEACHERByGrade
+http://localhost:8000/school/teacher/getTeacherByGrade?teacherClass=13
+//DELETE TEACHER
+http://localhost:8000/school/teacher/deleteTeacher?id=3
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+-------------------  docker run --name eureka-server -p 80:8761 --restart unless-stopped -id eureka-server:latest
+
+
+docker build -f Dockerfile -t my_eureka_server .
+docker run -p 7761:8761 --name my_eureka_server_cont -d my_eureka_server
+docker build -f Dockerfile -t school_data .
+docker run -t --link mysql_server:mysql -p 7003:8003 --name school_data_cont -d school_data
+
+docker network create eureka
+docker run --name eureka_cont --network=eureka -p 8762:8762 --restart unless-stopped -d eureka_img
+docker run --name eureka_cont --network=eureka -p 8762:8762 --restart unless-stopped -d eureka_img
+docker run --name school_info_cont --network=eureka -p 8000:8000 --restart unless-stopped -d school_info_img
+docker run --name school_info_cont --network=eureka --restart unless-stopped -d school_info_img
+
+
+
+docker run --name eureka-server --network=eureka -p 80:8761 --restart unless-stopped -id quickbooks2018/eureka-server:latest
+docker run --name ptvsports.cloudgeeks.ca --network=eureka --restart unless-stopped -id quickbooks2018/ptvsports.cloudgeeks.ca:latest
+
+
+STS
+
+Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:876/eureka/}, exception=I/O error on GET request for "http://localhost:876/eureka/apps/": Connection refused; nested exception is java.net.ConnectException: Connection refused stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:876/eureka/apps/": Connection refused; nested exception is java.net.ConnectException: Connection refused
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:784)
+
+Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://eureka_cont:8761/eureka/}, exception=Could not extract response: no suitable HttpMessageConverter found for response type [class org.springframework.cloud.netflix.eureka.http.EurekaApplications] and content type [text/html;charset=utf-8] stacktrace=org.springframework.web.client.UnknownContentTypeException: Could not extract response: no suitable HttpMessageConverter found for response type [class org.springframework.cloud.netflix.eureka.http.EurekaApplications] and content type [text/html;charset=utf-8]
+	
+	
+Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://eureka_cont:8761/eureka/}, exception=Could not extract response: no suitable HttpMessageConverter found for response type [class org.springframework.cloud.netflix.eureka.http.EurekaApplications] and content type [text/html;charset=utf-8] stacktrace=org.springframework.web.client.UnknownContentTypeException: Could not extract response: no suitable HttpMessageConverter found for response type [class org.springframework.cloud.netflix.eureka.http.EurekaApplications] and content type [text/html;charset=utf-8]
+
+
+
+
+
+
+
+..................
+
+
+
+right click => nwe => other =>maven project => maven-archetype-webapp
+
+
+
+
+-i => interactive mode
+
+
+
+
+
+
